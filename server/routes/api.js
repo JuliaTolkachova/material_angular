@@ -8,12 +8,13 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const tokenList = {};
 const User = require('./user');
-const JwtStrategy = require('passport-jwt').Strategy;
-const ExtractJwt = require('passport-jwt').ExtractJwt;
+
+
+
 
 const config = {
   "secret": "some-secret-shit-goes-here",
-  "refreshTokenSecret": "some-secret-refresh-token-shit",
+  // "refreshTokenSecret": "some-secret-refresh-token-shit",
   "tokenLife": 5,
   "refreshTokenLife": 10
 };
@@ -51,7 +52,7 @@ router.post('/login', (req, res) => {
       } else {
 
         let token = jwt.sign(user, config.secret, {expiresIn: config.tokenLife});
-        let refreshToken = jwt.sign(user, config.refreshTokenSecret, {expiresIn: config.refreshTokenLife});
+        let refreshToken = jwt.sign(user, config.secret, {expiresIn: config.refreshTokenLife});
         const response = {
           "status": "Logged in",
           "token": token,
@@ -60,7 +61,7 @@ router.post('/login', (req, res) => {
         };
         tokenList[refreshToken] = userName;
         res.status(200).json(response);
-      }
+            }
 
     })
   });
@@ -104,21 +105,30 @@ router.post('/login/refresh', (req, res) => {
 
 // Get heroes
 router.get('/homepage', ensureAuthorized, (req, res) => {
-  connection((dbo) => {
-    dbo.collection("heroes").find({}).toArray(function (err, result) {
-      if (err) {
-        console.log(err);
-        res.json({
-          type: false,
-          data: "Error occured: " + err
-        });
-      } else {
+  jwt.verify(req.token, config.secret, function (err, data) {
+    if (err) {
+      res.sendStatus(403);
+    } else {
+    connection((dbo) => {
+      dbo.collection("heroes").find({}).toArray(function (err, result) {
+        if (err) {
+          console.log(err);
+          res.json({
+            type: false,
+            data: "Error occured: " + err
+          });
+        } else {
+          res.json({
+            type: true,
+            data: data
+          });
+          res.send(result)
 
-        res.send(result)
-
-      }
+        }
+      });
     });
-  });
+  }
+});
 });
 
 
@@ -144,16 +154,23 @@ router.get('/heroes',ensureAuthorized, (req, res) => {
 
 function ensureAuthorized(req, res, next) {
   let bearerToken;
-  let bearerHeader = req.headers["authorization"];
-  if (typeof bearerHeader !== 'undefined') {
+   let bearerHeader = req.headers["authorization"];
+    if (typeof bearerHeader !== 'undefined') {
     let bearer = bearerHeader.split(" ");
     bearerToken = bearer[1];
     req.token = bearerToken;
     next();
+
   } else {
-    res.send(403);
+   // res.send(403);
+    res.status(403).send({
+
+      "error": true,
+      "message": 'Unautorization user.'
+    });
   }
 }
+
 
 
 // Get heroes
@@ -308,6 +325,5 @@ router.put('/heroes/:id', (req, res) => {
     }
   }
 });
-
 
 module.exports = router;

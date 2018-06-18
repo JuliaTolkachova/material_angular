@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit {
       localStorage.setItem('expires_at', expiresAt);
       this.router.navigate(['/homepage']);
     }, err => {
-      this.message = err.error.msg;
+      // this.message = err.error.msg;
       this.showAlert();
      });
   }

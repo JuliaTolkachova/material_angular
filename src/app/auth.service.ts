@@ -29,7 +29,7 @@ export class AuthService {
 
 
   login(username: string, password: string) {
-    return this.http.post('http://localhost:3000/api/login', {username: username, password: password}, httpOptions).pipe(
+   return this.http.post('http://localhost:3000/api/login', {username: username, password: password}, {headers: new HttpHeaders().set('Authorization', 'Bearer' + 'token')}).pipe(
       res => res);
   }
 
