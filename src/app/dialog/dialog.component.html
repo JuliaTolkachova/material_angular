@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>
+  {{ dialog.title }}
+</h2>
+<mat-dialog-content>
+  {{ dialog.content }}
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button
+    mat-button
+    (click)="dialogRef.close(false)"
+    color="primary">
+    {{ dialog.close }}
+  </button>
+  <button
+    *ngIf="dialog.ok"
+    mat-button
+    color="primary"
+    (click)="dialogRef.close(true)">
+    {{ dialog.ok }}
+  </button>
+</mat-dialog-actions>
+

@@ -1,0 +1,52 @@
+
+.example-container {
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+  max-height: 500px;
+  overflow: auto;
+}
+
+.example-header {
+  min-height: 64px;
+  padding: 8px 24px 0;
+}
+
+.mat-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.example-button-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+
+.example-container a {
+  color: black;
+  text-decoration: none;
+  position: relative;
+  display: block;
+  width: 250px;
+}
+
+.example-container a:hover {
+  color: darkmagenta;
+}
+
+.example-container mat-cell {
+  position: relative;
+  cursor: pointer;
+  background-color: white;
+  margin: .5em;
+  padding: .3em 0;
+  height: 1.6em;
+  border-radius: 4px;
+}
+

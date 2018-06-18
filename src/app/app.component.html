@@ -1,0 +1,23 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <span>Tour of Heroes</span>
+    <span class="spacer"></span>
+    <nav>
+      <mat-icon>home</mat-icon>
+      <a routerLink="/homepage"> Homepage</a>
+      <a routerLink="/dashboard"> Dashboard </a>
+      <a routerLink="/heroes"> Heroes </a>
+      <a routerLink="/pie-chart"> Chart </a>
+      <a routerLink="/login">Login</a>
+      <a routerLink="/login">Logout</a>
+    </nav>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<ul>
+  <li *ngFor="let hero of heroes">{{ hero.name }}</li>
+</ul>
+
+<router-outlet></router-outlet>
+<app-messages></app-messages>
+

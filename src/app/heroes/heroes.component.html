@@ -1,0 +1,78 @@
+<h2>My Heroes</h2>
+  <p *ngIf="isValidFormSubmitted" [ngClass] = "'success'">
+     The HERO was successfully added to the database!
+  </p>
+
+    <mat-card class="example-card">
+       <mat-card-header>
+          <mat-card-title>Create a new Hero</mat-card-title>
+       </mat-card-header>
+    <mat-card-content>
+       <form #heroForm="ngForm" (ngSubmit)="onFormSubmit(heroForm)" method="post" action="">
+         <div class="example-container">
+           <mat-form-field hintLabel="use the Latin alphabet">
+              <input matInput  #heroName name="heroname" [ngModel]="" pattern= "[0-9a-zA-Z]{1,15}" placeholder="Name" #uname="ngModel"/>
+                 <span class="validity"></span>
+                    <div *ngIf="uname.errors && heroForm.submitted && !isValidFormSubmitted" [ngClass] = "'error'"> </div>
+           </mat-form-field>
+
+           <mat-form-field>
+              <mat-select #heroType placeholder="Type">
+                <mat-option value="druid">Druid</mat-option>
+                <mat-option value="hunter">Hunter</mat-option>
+                <mat-option value="paladin">Paladin</mat-option>
+                <mat-option value="priest">Priest</mat-option>
+                <mat-option value="shaman">Shaman</mat-option>
+              </mat-select>
+           </mat-form-field>
+
+           <mat-form-field>
+              <input matInput #heroPoints name="points" placeholder="Points" type="number" min="0" max="200"  [ngModel]="" pattern= "[0-9]{1,5}" #upoints="ngModel"/>
+                <span class="validity"></span>
+                 <div *ngIf="upoints.errors && heroForm.submitted && !isValidFormSubmitted" [ngClass] = "'error'">
+                   <div *ngIf='!upoints.pattern'>
+                      Points is not valid!
+                   </div>
+                 </div>
+           </mat-form-field>
+
+
+           <mat-form-field>
+              <input matInput #heroDate type ="datetime-local" [matDatepickerFilter]="" [matDatepicker]="picker" placeholder="Date" [formControl]="date">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+           </mat-form-field>
+
+
+           <mat-form-field>
+             <mat-select #heroColor placeholder="Color">
+                <mat-option value="blue"> Blue</mat-option>
+                <mat-option value="red">Red</mat-option>
+                <mat-option value="black"> Black</mat-option>
+                <mat-option value="yellow">Yellow</mat-option>
+                <mat-option value="green">Green</mat-option>
+             </mat-select>
+           </mat-form-field>
+           <mat-card-actions>
+              <button mat-raised-button   (click)=" add(heroName.value, heroType.value, heroPoints.value, heroDate.value, heroColor.value); heroName.value=''"color="primary">ADD</button>
+              <mat-spinner [style.display]="showSpinner ? 'block' : 'none'" color="primary"></mat-spinner>
+           </mat-card-actions>
+         </div>
+       </form>
+    </mat-card-content>
+  </mat-card>
+
+<ul class="heroes">
+  <li *ngFor="let hero of heroes; let i=index">
+    <a routerLink="/detail/{{hero._id}}">
+      <span class="badge">{{i+1}}</span> {{hero.name}}
+    </a>
+    <button class="delete" title="delete hero"
+            (click)="delete(hero)">x</button>
+  </li>
+</ul>
+
+
+
+
+

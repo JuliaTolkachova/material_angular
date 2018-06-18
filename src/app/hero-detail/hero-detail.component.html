@@ -1,0 +1,53 @@
+<mat-card class="example-card">
+  <mat-card-content>
+    <div *ngIf="hero">
+       <h2>{{ hero.name | uppercase }} Details</h2>
+       <div><span>id: </span>{{hero._id}}</div>
+
+     <div class="example-container">
+      <mat-form-field  hintLabel="use the Latin alphabet">
+         <input matInput  [(ngModel)]="hero.name" pattern= "[0-9a-zA-Z]{1,15}" placeholder="Name" />
+         <span class="validity"></span>
+      </mat-form-field>
+
+      <mat-form-field>
+         <mat-select [(ngModel)]="hero.type" placeholder="Type" >
+           <mat-option value="druid">Druid</mat-option>
+           <mat-option value="hunter">Hunter</mat-option>
+           <mat-option value="paladin">Paladin</mat-option>
+           <mat-option value="priest">Priest</mat-option>
+           <mat-option value="shaman">Shaman</mat-option>
+         </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+         <input matInput  [(ngModel)]="hero.points" pattern= "[0-9]{1,15}" placeholder="Points"/>
+         <span class="validity"></span>
+      </mat-form-field>
+
+      <mat-form-field>
+         <input matInput [(ngModel)]="hero.date" [matDatepickerFilter]="myFilter" [matDatepicker]="picker" placeholder="Choose a date">
+         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+         <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+
+      <mat-form-field>
+        <mat-select #heroColor placeholder="Color" [(ngModel)]="hero.color" >
+          <mat-option value="blue"> Blue</mat-option>
+          <mat-option value="red">Red</mat-option>
+          <mat-option value="black"> Black</mat-option>
+          <mat-option value="yellow">Yellow</mat-option>
+          <mat-option value="green">Green</mat-option>
+        </mat-select>
+      </mat-form-field>
+     </div>
+
+    </div>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button (click)="goBack()" color="primary">Back</button>
+    <button mat-raised-button (click)="save()" color="primary">Save</button>
+    <mat-spinner [style.display]="showSpinner ? 'block' : 'none'" color="primary"></mat-spinner>
+  </mat-card-actions>
+</mat-card>
