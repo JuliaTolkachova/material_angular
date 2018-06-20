@@ -12,15 +12,19 @@ export class AuthGuard implements CanActivate {
               private authService: AuthService) {
   }
 
-
-
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-      if (localStorage.getItem('token')) {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    const token = localStorage.getItem('token');
+    const refreshToken = localStorage.getItem('refreshToken');
+     if (token && refreshToken) {
+      if (this.authService.isTokenExpired(token)) {
+        this.authService.getNewAcessToken();
+        } else {
         return true;
       }
-      this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
-      return false;
     }
+    this.router.navigate(['/login']);
+  }
+
 
 
 }

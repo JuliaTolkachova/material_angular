@@ -8,16 +8,17 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const tokenList = {};
 const User = require('./user');
-
+const LocalStorage = require('node-localstorage');
 
 
 
 const config = {
   "secret": "some-secret-shit-goes-here",
   // "refreshTokenSecret": "some-secret-refresh-token-shit",
-  "tokenLife": 5,
-  "refreshTokenLife": 10
+  "tokenLife": 15,
+  "refreshTokenLife": 20
 };
+
 
 
 //Connect
@@ -61,7 +62,7 @@ router.post('/login', (req, res) => {
         };
         tokenList[refreshToken] = userName;
         res.status(200).json(response);
-            }
+        }
 
     })
   });
@@ -70,7 +71,8 @@ router.post('/login', (req, res) => {
 
 // delete tokens
 router.post('/token', function (req, res, next) {
-  let refreshToken = req.body.refreshToken;
+  let refreshToken = req.query.refreshToken;
+  let token = req.query.token;
   if(refreshToken in tokenList) {
     delete tokenList[refreshToken];
   }
@@ -82,19 +84,20 @@ router.post('/token', function (req, res, next) {
 router.post('/login/refresh', (req, res) => {
   connection((dbo) => {
     let userName = req.body.username;
-    let refreshToken = req.body.refreshToken;
-     if ((tokenList[refreshToken] == userName) && (refreshToken in tokenList)) {
+    let refToken = req.body.refreshToken;
+     if ( (tokenList[refToken] == userName)) {
       let user = {
         "username": userName,
-        "password": password
-      };
-      const token = jwt.sign(user, config.secret, {expiresIn: config.tokenLife});
+        };
+      let token = jwt.sign(user, config.secret, {expiresIn: config.tokenLife});
+      let refreshToken = jwt.sign(user, config.secret, {expiresIn: config.refreshTokenLife});
       const response = {
+        "status": "Logged in",
         "token": token,
-        "user": user
-      };
+        "refreshToken": refreshToken,
+        };
       // update the token in the list
-      tokenList[user.refreshToken].token = token;
+      tokenList[user.refreshToken] = userName;
       res.status(200).json(response);
     } else {
       res.status(404).send('Invalid request')
@@ -115,7 +118,7 @@ router.get('/homepage', ensureAuthorized, (req, res) => {
           console.log(err);
           res.json({
             type: false,
-            data: "Error occured: " + err
+            data: "Error: " + err
           });
         } else {
           res.json({
@@ -149,28 +152,6 @@ router.get('/heroes',ensureAuthorized, (req, res) => {
     });
   });
 });
-
-
-
-function ensureAuthorized(req, res, next) {
-  let bearerToken;
-   let bearerHeader = req.headers["authorization"];
-    if (typeof bearerHeader !== 'undefined') {
-    let bearer = bearerHeader.split(" ");
-    bearerToken = bearer[1];
-    req.token = bearerToken;
-    next();
-
-  } else {
-   // res.send(403);
-    res.status(403).send({
-
-      "error": true,
-      "message": 'Unautorization user.'
-    });
-  }
-}
-
 
 
 // Get heroes
@@ -325,5 +306,24 @@ router.put('/heroes/:id', (req, res) => {
     }
   }
 });
+
+function ensureAuthorized(req, res, next) {
+  let bearerToken;
+  let bearerHeader = req.headers["authorization"];
+  if (typeof bearerHeader !== 'undefined') {
+    let bearer = bearerHeader.split(" ");
+    bearerToken = bearer[1];
+    req.token = bearerToken;
+    next();
+
+  } else {
+    // res.send(403);
+    res.status(403).send({
+
+      "error": true,
+      "message": 'Unautorization user.'
+    });
+  }
+}
 
 module.exports = router;

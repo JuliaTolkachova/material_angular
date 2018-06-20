@@ -25,7 +25,10 @@ intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<an
       if (err instanceof HttpErrorResponse) {
         if (err.status === 401) {
           this.authService.collectFailedRequest(request);
-          this.router.navigate(['/login']);
+          return this.authService.getNewAcessToken();
+         // return this.authService.getNewAcessToken().map(result => {
+          // this.authService.retryFailedRequests();
+          // });
         }
       }
     });
