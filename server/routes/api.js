@@ -155,7 +155,7 @@ router.get('/heroes',ensureAuthorized, (req, res) => {
 
 
 // Get heroes
-router.get('/pie-chart', (req, res) => {
+router.get('/pie-chart',ensureAuthorized, (req, res) => {
   console.log("allp: " + req.query.name);
   connection((dbo) => {
     dbo.collection("heroes").find({}).toArray(function (err, result) {
@@ -170,7 +170,7 @@ router.get('/pie-chart', (req, res) => {
 
 
 //get single
-router.get('/heroes/:id', (req, res) => {
+router.get('/heroes/:id',ensureAuthorized, (req, res) => {
   connection((dbo) => {
     let id = req.params.id;
     dbo.collection("heroes").find({'_id': new ObjectId(id)}).toArray(function (err, post) {
@@ -185,7 +185,7 @@ router.get('/heroes/:id', (req, res) => {
 
 
 //search hero
-router.get('/searchheroes', (req, res) => {
+router.get('/searchheroes', ensureAuthorized, (req, res) => {
   console.log("search: " + req.query.name);
   connection((dbo) => {
     let query = req.query.name;
@@ -201,7 +201,7 @@ router.get('/searchheroes', (req, res) => {
 
 
 //Create
-router.post('/heroes', (req, res) => {
+router.post('/heroes',ensureAuthorized, (req, res) => {
   let points = req.body.points;
   if (points < 0) {
     console.log("it's not positive number");
@@ -247,7 +247,7 @@ router.post('/heroes', (req, res) => {
 
 
 //Delete
-router.delete('/heroes/:id', (req, res) => {
+router.delete('/heroes/:id', ensureAuthorized, (req, res) => {
   connection((dbo) => {
     let id = req.params.id;
     dbo.collection("heroes").remove({'_id': new ObjectId(id)}, function (err, post) {
@@ -261,7 +261,7 @@ router.delete('/heroes/:id', (req, res) => {
 });
 
 //Update
-router.put('/heroes/:id', (req, res) => {
+router.put('/heroes/:id', ensureAuthorized, (req, res) => {
   let points = req.body.points;
   if (points < 0) {
     console.log("it's not positive number");
