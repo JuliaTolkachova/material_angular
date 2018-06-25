@@ -41,7 +41,7 @@ data: any;
     localStorage.removeItem('expires_at');
   }
 
-  public getToken(): string {
+   public getToken(): string {
     return localStorage.getItem('token');
   }
 
@@ -108,4 +108,27 @@ data: any;
     return !(date.valueOf() > new Date().valueOf());
     }
 
+  public getRefTokenExpirationDate(refreshToken: string): Date {
+    const decoded = jwt_decode(refreshToken);
+
+    if (decoded.exp === undefined) {
+      return null;
+    }
+    this.router.navigate(['/login']);
+  }
+
+  isRefTokenExpired(refreshToken?: string): boolean {
+    if (!refreshToken) {
+      refreshToken = this.getRefreshToken();
+    }
+    if (!refreshToken) {
+      return true;
+    }
+
+    const date = this.getRefTokenExpirationDate(refreshToken);
+    if (date === undefined) {
+      return false;
+    }
+    return !(date.valueOf() > new Date().valueOf());
+  }
 }

@@ -21,6 +21,9 @@ export class AuthGuard implements CanActivate {
         } else {
         return true;
       }
+      if (this.authService.isRefTokenExpired(refreshToken)) {
+        this.router.navigate(['/login']);
+      }
     }
     this.router.navigate(['/login']);
   }

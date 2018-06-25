@@ -3,7 +3,6 @@ const router = express.Router();
 const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectId;
 const morgan = require('morgan');
-const passport = require('passport');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const tokenList = {};
@@ -14,9 +13,8 @@ const LocalStorage = require('node-localstorage');
 
 const config = {
   "secret": "some-secret-shit-goes-here",
-  // "refreshTokenSecret": "some-secret-refresh-token-shit",
   "tokenLife": 15,
-  "refreshTokenLife": 20
+  "refreshTokenLife": 30
 };
 
 
